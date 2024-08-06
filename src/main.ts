@@ -3,6 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
 import cors from '@fastify/cors';
+import { HealthService } from './health/health.service';
 
 import {
   FastifyAdapter,
@@ -16,6 +17,18 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
+  const logger = app.get(Logger);
+
+  app.useLogger(logger);
+    // Initialize the health service
+    const healthService = app.get(HealthService);
+    const health = await healthService.checkHealth();
+
+    if (health.status === 'ERROR') {
+      logger.error('Server failed to start', health.message);
+      process.exit(1);
+    }
+
     // Configure CORS
     app.register(cors, {
       origin: ['https://studio.apollographql.com', '*'], // Allow Apollo Studio and any other origins
@@ -24,9 +37,7 @@ async function bootstrap() {
     });
 
 
-  const logger = app.get(Logger);
 
-  app.useLogger(logger);
 
   app.setGlobalPrefix('api/v1', {
     exclude: ['/', 'status', 'api', 'api/v1', 'api/docs'],

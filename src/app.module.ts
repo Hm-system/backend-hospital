@@ -9,11 +9,16 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { schema } from './graphql/schema-merge';
 import apiConfig from 'config/api.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import dataSource from './database/data-source';
+import { HealthModule } from './health/health.module';
+
 
 const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.development';
 
 @Module({
   imports: [
+    // config module
     ConfigModule.forRoot({
       isGlobal: true,
       load: [serverConfig, apiConfig],
@@ -30,6 +35,7 @@ const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.de
         abortEarly: true,
       },
     }),
+    // logger module
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL || 'info',
@@ -40,6 +46,7 @@ const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.de
         ],
       },
     }),
+    // graphql module
     GraphQLModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -51,10 +58,18 @@ const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.de
         installSubscriptionHandlers: true,
         introspection: true,
         engine: {
-          apiKey: configService.get<string>('api.apolloApiKey'),
+          apiKey: configService.get<string>('api-key.apolloApiKey'),
         },
       }),
     }),
+    // typeorm module
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => ({
+        ...dataSource.options,
+      }),
+      dataSourceFactory: async () => dataSource,
+    }),
+    HealthModule
   ],
   controllers: [AppController],
   providers: [AppService],
