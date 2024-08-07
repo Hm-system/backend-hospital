@@ -6,15 +6,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 import { GraphQLModule } from '@nestjs/graphql';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriver } from '@nestjs/apollo';
 import { schema } from './graphql/schema-merge';
 import apiConfig from 'config/api.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dataSource from './database/data-source';
 import { HealthModule } from './health/health.module';
 
-
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.development';
+const envFile = process.env.NODE_ENV
+  ? `.env.${process.env.NODE_ENV}`
+  : '.env.development';
 
 @Module({
   imports: [
@@ -69,7 +70,7 @@ const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env.de
       }),
       dataSourceFactory: async () => dataSource,
     }),
-    HealthModule
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

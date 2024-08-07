@@ -4,7 +4,9 @@ import { GraphQLSchema } from 'graphql';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 
 // Load schema files
-const typesArray = loadFilesSync('./src/graphql/**/*.graphql', { recursive: true });
+const typesArray = loadFilesSync('./src/graphql/**/*.graphql', {
+  recursive: true,
+});
 
 // Merge schema types
 const typeDefs = mergeTypeDefs(typesArray);

@@ -20,24 +20,21 @@ async function bootstrap() {
   const logger = app.get(Logger);
 
   app.useLogger(logger);
-    // Initialize the health service
-    const healthService = app.get(HealthService);
-    const health = await healthService.checkHealth();
+  // Initialize the health service
+  const healthService = app.get(HealthService);
+  const health = await healthService.checkHealth();
 
-    if (health.status === 'ERROR') {
-      logger.error('Server failed to start', health.message);
-      process.exit(1);
-    }
+  if (health.status === 'ERROR') {
+    logger.error('Server failed to start', health.message);
+    process.exit(1);
+  }
 
-    // Configure CORS
-    app.register(cors, {
-      origin: ['https://studio.apollographql.com', '*'], // Allow Apollo Studio and any other origins
-      credentials: true, // Allow cookies to be sent and received
-      methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
-    });
-
-
-
+  // Configure CORS
+  app.register(cors, {
+    origin: ['https://studio.apollographql.com', '*'], // Allow Apollo Studio and any other origins
+    credentials: true, // Allow cookies to be sent and received
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
+  });
 
   app.setGlobalPrefix('api/v1', {
     exclude: ['/', 'status', 'api', 'api/v1', 'api/docs'],

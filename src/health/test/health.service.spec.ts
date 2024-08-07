@@ -13,7 +13,10 @@ describe('HealthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HealthService, { provide: DataSource, useClass: MockDataSource }],
+      providers: [
+        HealthService,
+        { provide: DataSource, useClass: MockDataSource },
+      ],
     }).compile();
 
     service = module.get<HealthService>(HealthService);
@@ -27,12 +30,20 @@ describe('HealthService', () => {
   it('should return OK if database connection is successful', async () => {
     (dataSource.query as jest.Mock).mockResolvedValueOnce([]);
     const result = await service.checkHealth();
-    expect(result).toEqual({ status: 'OK', message: 'All systems are operational' });
+    expect(result).toEqual({
+      status: 'OK',
+      message: 'All systems are operational',
+    });
   });
 
   it('should return ERROR if database connection fails', async () => {
-    (dataSource.query as jest.Mock).mockRejectedValueOnce(new Error('Database connection failed'));
+    (dataSource.query as jest.Mock).mockRejectedValueOnce(
+      new Error('Database connection failed'),
+    );
     const result = await service.checkHealth();
-    expect(result).toEqual({ status: 'ERROR', message: 'Database connection failed' });
+    expect(result).toEqual({
+      status: 'ERROR',
+      message: 'Database connection failed',
+    });
   });
 });
