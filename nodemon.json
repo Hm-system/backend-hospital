@@ -1,0 +1,5 @@
+{
+    "watch": ["public"],
+    "ext": "html,js,css",
+    "exec": "http-server ./public -p 3000"
+  }

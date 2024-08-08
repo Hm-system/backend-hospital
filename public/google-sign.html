@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Sign-In</title>
+</head>
+<body>
+  <button id="sign-in">Sign In with Google</button>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+  apiKey: "AIzaSyCB_8lA1ZFYY_T4PzjMLQ4yr9J0hbTwqLM",
+  authDomain: "hospital-management-syst-b5146.firebaseapp.com",
+  databaseURL: "https://hospital-management-syst-b5146-default-rtdb.firebaseio.com",
+  projectId: "hospital-management-syst-b5146",
+  storageBucket: "hospital-management-syst-b5146.appspot.com",
+  messagingSenderId: "846383471544",
+  appId: "1:846383471544:web:3bf5d12c2acbd9bd858d4d",
+  measurementId: "G-DG14HTYHX0"
+};
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById('sign-in').addEventListener('click', async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        // The signed-in user info.
+        const user = result.user;
+        console.log('User Info:', user);
+        // You can get the token or other user information here
+        const token = await user.getIdToken();
+        console.log('ID Token:', token);
+        // You can send the token to your backend here
+        fetch('http://localhost:8000/api/v1/user/auth/google-signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+      } catch (error) {
+        console.error('Error signing in:', error);
+      }
+    });
+  </script>
+</body>
+</html>
