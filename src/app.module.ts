@@ -12,6 +12,8 @@ import apiConfig from 'config/api.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dataSource from './database/data-source';
 import { HealthModule } from './health/health.module';
+import { FirebaseModule } from './firebase/firebase.module';
+import { UserModule } from './user/user.module';
 
 const envFile = process.env.NODE_ENV
   ? `.env.${process.env.NODE_ENV}`
@@ -59,7 +61,7 @@ const envFile = process.env.NODE_ENV
         installSubscriptionHandlers: true,
         introspection: true,
         engine: {
-          apiKey: configService.get<string>('api-key.apolloApiKey'),
+          apiKey: configService.get<string>('api.apolloApiKey'),
         },
       }),
     }),
@@ -71,6 +73,8 @@ const envFile = process.env.NODE_ENV
       dataSourceFactory: async () => dataSource,
     }),
     HealthModule,
+    FirebaseModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

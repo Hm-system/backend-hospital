@@ -4,6 +4,8 @@ import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@nestjs/config';
 import cors from '@fastify/cors';
 import { HealthService } from './health/health.service';
+import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './filters/all-exceptions.filter';
 
 import {
   FastifyAdapter,
@@ -19,7 +21,20 @@ async function bootstrap() {
 
   const logger = app.get(Logger);
 
+  // Register the global exception filter
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  // Register the logger
   app.useLogger(logger);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // transform: true,
+      // whitelist: true,
+      // forbidNonWhitelisted: true,
+    }),
+  );
+
   // Initialize the health service
   const healthService = app.get(HealthService);
   const health = await healthService.checkHealth();

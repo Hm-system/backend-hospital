@@ -37,13 +37,21 @@ describe('HealthService', () => {
   });
 
   it('should return ERROR if database connection fails', async () => {
-    (dataSource.query as jest.Mock).mockRejectedValueOnce(
-      new Error('Database connection failed'),
-    );
-    const result = await service.checkHealth();
-    expect(result).toEqual({
-      status: 'ERROR',
-      message: 'Database connection failed',
-    });
+    const originalConsoleError = console.error;
+    console.error = jest.fn();
+
+    try {
+      (dataSource.query as jest.Mock).mockRejectedValueOnce(
+        new Error('Database connection failed'),
+      );
+      const result = await service.checkHealth();
+      expect(result).toEqual({
+        status: 'ERROR',
+        message: 'Database connection failed',
+      });
+    } finally {
+      // Restore console.error
+      console.error = originalConsoleError;
+    }
   });
 });
