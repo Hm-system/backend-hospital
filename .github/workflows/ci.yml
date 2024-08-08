@@ -30,7 +30,7 @@ jobs:
       run: yarn install
 
     - name: Lint code
-      run: yarn lint --if-present
+      run: yarn lint 
 
     - name: Audit dependencies
       run: yarn audit --level high
@@ -52,6 +52,7 @@ jobs:
         fi
 
     - name: Build project
-      run: yarn build --if-present
+      run: yarn build
 
-    - run: echo "No tests available yet. This is a placeholder."
+    - name: run Test
+      run: yarn test
