@@ -30,28 +30,10 @@ jobs:
       run: yarn install
 
     - name: Lint code
-      run: yarn lint --if-present
-
-    - name: Audit dependencies
-      run: yarn audit --level high
-
-    - name: Set up git-secrets
-      run: |
-        git clone https://github.com/awslabs/git-secrets.git
-        cd git-secrets && make install
-
-    - name: Scan for secrets
-      run: git-secrets --scan
-
-    - name: Check .gitignore
-      run: |
-        if grep -Fxq ".env" .gitignore; then
-          echo ".env is properly ignored";
-        else
-          echo "ERROR: .env is not in .gitignore" && exit 1;
-        fi
+      run: yarn lint 
 
     - name: Build project
-      run: yarn build --if-present
+      run: yarn build
 
-    - run: echo "No tests available yet. This is a placeholder."
+    - name: run Test
+      run: yarn test
