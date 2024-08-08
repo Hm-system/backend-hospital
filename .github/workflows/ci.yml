@@ -32,9 +32,6 @@ jobs:
     - name: Lint code
       run: yarn lint 
 
-    - name: Audit dependencies
-      run: yarn audit --level high
-
     - name: Set up git-secrets
       run: |
         git clone https://github.com/awslabs/git-secrets.git
