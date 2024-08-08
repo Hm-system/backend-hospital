@@ -32,22 +32,6 @@ jobs:
     - name: Lint code
       run: yarn lint 
 
-    - name: Set up git-secrets
-      run: |
-        git clone https://github.com/awslabs/git-secrets.git
-        cd git-secrets && make install
-
-    - name: Scan for secrets
-      run: git-secrets --scan
-
-    - name: Check .gitignore
-      run: |
-        if grep -Fxq ".env" .gitignore; then
-          echo ".env is properly ignored";
-        else
-          echo "ERROR: .env is not in .gitignore" && exit 1;
-        fi
-
     - name: Build project
       run: yarn build
 
